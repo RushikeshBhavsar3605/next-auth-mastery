@@ -4,6 +4,7 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { startTransition, useState, useTransition } from "react";
+import { useSession } from "next-auth/react";
 import { settings } from "@/actions/settings";
 import { SettingsSchema } from "@/schemas";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
@@ -37,6 +38,7 @@ const SettingsPage = () => {
   const [error, setError] = useState<string | undefined>();
   const [success, setSuccess] = useState<string | undefined>();
   const [isPending, setIsPending] = useTransition();
+  const { update } = useSession();
 
   const form = useForm<z.infer<typeof SettingsSchema>>({
     resolver: zodResolver(SettingsSchema),
@@ -59,6 +61,7 @@ const SettingsPage = () => {
           }
 
           if (data.success) {
+            update();
             setSuccess(data.success);
           }
         })
